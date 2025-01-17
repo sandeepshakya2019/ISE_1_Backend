@@ -18,32 +18,32 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       required: false,
     },
-    isKYC: {
-      type: Boolean,
-      default: false,
-    },
-    kycDetails: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Kyc",
-      required: true,
-    },
-    bankDetails: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Bank",
-      required: true,
-    },
-    loanDetails: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Loan",
-      },
-    ],
-    financeDetails: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Finance",
-      },
-    ],
+    // isKYC: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // kycDetails: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Kyc",
+    //   required: true,
+    // },
+    // bankDetails: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Bank",
+    //   required: true,
+    // },
+    // loanDetails: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Loan",
+    //   },
+    // ],
+    // financeDetails: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Finance",
+    //   },
+    // ],
   },
   { timestamps: true }
 );

@@ -17,6 +17,11 @@ const bankDetailsSchema = new mongoose.Schema(
       required: true,
       match: /^[A-Z]{4}0[A-Z0-9]{6}$/, // Validates IFSC format
     },
+    userid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );
