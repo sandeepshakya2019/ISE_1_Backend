@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for financial inclusion app",
+  "homepage": "https://github.com/sandeepshakya2019/ISE_1_Backend#readme",
+  "bugs": {
+    "url": "https://github.com/sandeepshakya2019/ISE_1_Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandeepshakya2019/ISE_1_Backend.git"
+  },
+  "license": "ISC",
+  "author": "Sandeep, Abhishek, Ashant",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
