@@ -12,7 +12,7 @@
   },
   "license": "ISC",
   "author": "Sandeep, Abhishek, Ashant",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
