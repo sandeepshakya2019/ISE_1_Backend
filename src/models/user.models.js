@@ -16,11 +16,11 @@ const userSchema = new mongoose.Schema(
       },
       index: true,
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: [8, "Password must be at least 8 characters"],
-    },
+    // password: {
+    //   type: String,
+    //   required: true,
+    //   minlength: [8, "Password must be at least 8 characters"],
+    // },
     fullName: {
       type: String,
       required: [true, "Full Name is required"],
@@ -79,17 +79,17 @@ const userSchema = new mongoose.Schema(
 
 userSchema.plugin(mongooseAggregatePaginate);
 
-// jwt is bearer token
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});
+// // jwt is bearer token
+// userSchema.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+//   next();
+// });
 
-userSchema.methods.isPasswordCorrect = async function (pass) {
-  return await bcrypt.compare(pass, this.password);
-};
+// userSchema.methods.isPasswordCorrect = async function (pass) {
+//   return await bcrypt.compare(pass, this.password);
+// };
 
 // Adding custom methods for jwt
 userSchema.methods.generateToken = async function () {
