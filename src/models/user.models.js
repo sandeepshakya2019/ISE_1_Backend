@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-import jwt form "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -16,7 +16,12 @@ const userSchema = new mongoose.Schema(
       },
       index: true,
     },
-    fullName:{
+    password: {
+      type: String,
+      required: true,
+      minlength: [8, "Password must be at least 8 characters"],
+    },
+    fullName: {
       type: String,
       required: [true, "Full Name is required"],
     },
@@ -33,10 +38,10 @@ const userSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid emiail id !!`,
       },
     },
-    refreshToken:{
+    refreshToken: {
       type: String,
       required: false,
-    }
+    },
     // userName:{
     //   type: String,
     //   unique: true,
@@ -74,34 +79,43 @@ const userSchema = new mongoose.Schema(
 
 userSchema.plugin(mongooseAggregatePaginate);
 
-// jwt is bearer token 
+// jwt is bearer token
 userSchema.pre("save", async function (next) {
-  // this.
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
   next();
-})
+});
+
+userSchema.methods.isPasswordCorrect = async function (pass) {
+  return await bcrypt.compare(pass, this.password);
+};
 
 // Adding custom methods for jwt
 userSchema.methods.generateToken = async function () {
-  jwt.sign({
-    _id:this._id,
-    mobileNo: this.mobileNo,
-    fullName: this.fullName
-  }, 
-  process.env.ACCESS_TOKEN_SECRET, 
-  {
-    expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-  })
-}
+  jwt.sign(
+    {
+      _id: this._id,
+      mobileNo: this.mobileNo,
+      fullName: this.fullName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
 
 userSchema.methods.RefreshToken = async function () {
-  jwt.sign({
-    _id:this._id,
-  }, 
-  process.env.REFRESH_TOKEN_SECRET, 
-  {
-    expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-  })
-}
-
+  jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const User = mongoose.model("User", userSchema);
