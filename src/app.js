@@ -22,8 +22,11 @@ app.use(cookieParser());
 
 // import routes
 import userRouter from "./routes/user.route.js";
+import validateRouter from "./routes/validateDetails.route.js";
 
 app.use("/", userRouter);
+
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/validate", validateRouter);
 
 export { app };
