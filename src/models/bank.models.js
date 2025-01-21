@@ -22,6 +22,16 @@ const bankDetailsSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    isOnline: {
+      // enum: ["true", "false"],
+      type: Boolean,
+      default: false,
+    },
+    isOffline: {
+      // enum: ["true", "false"],
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

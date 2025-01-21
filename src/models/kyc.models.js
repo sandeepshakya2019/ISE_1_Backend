@@ -13,7 +13,7 @@ const kycSchema = new mongoose.Schema(
     },
     incomeCertificateId: {
       type: String,
-      required: [true, "Income Certificate ID is required"],
+      // required: [true, "Income Certificate ID is required"],
       trim: true,
     },
     photo: {
