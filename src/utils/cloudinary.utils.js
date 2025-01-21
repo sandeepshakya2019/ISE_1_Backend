@@ -17,7 +17,7 @@ const uploadOnCloudinary = async (localPath, username) => {
       resource_type: "auto",
     });
     console.log("[+] File uploaded to Cloudinary:", result.url);
-    // fs.unlinkSync(localPath);
+    fs.unlinkSync(localPath);
     return result;
   } catch (error) {
     console.error("[-] Error uploading to cloudinary", error);

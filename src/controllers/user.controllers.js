@@ -102,15 +102,18 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "User Login successfully",
-  });
+  return res
+    .status(201)
+    .json(new ApiResponse(200, null, "[+] Login Successfully"));
 });
 
 const kycVerification = asyncHandler(async (req, res) => {
+  console.log("Files", req.files);
+  console.log("Body", req.body);
+
   let errorMsg = { livePhoto: "", aadharCardId: "", incomeCertificateId: "" };
   let isError = false;
-  const livePhotoPath = req.files?.livePhoto[0]?.path;
+  const livePhotoPath = req.files?.livePhoto?.[0]?.path;
   console.log(livePhotoPath);
   if (!livePhotoPath) {
     errorMsg.livePhoto = "Live Photo is required";
@@ -122,10 +125,9 @@ const kycVerification = asyncHandler(async (req, res) => {
     errorMsg.livePhoto = "Live Photo is required";
     throw new ApiError(400, errorMsg);
   }
-
-  res.status(200).json({
-    message: "KYC verification Successfully",
-  });
+  return res
+    .status(201)
+    .json(new ApiResponse(201, livePhoto, "[+] KYC verification Successfully"));
 });
 
 export { basicSetup, registerUser, loginUser, kycVerification };
