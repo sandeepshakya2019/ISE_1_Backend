@@ -4,6 +4,7 @@ import {
   registerUser,
   kycVerification,
   basicSetup,
+  bankVerification,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -14,8 +15,11 @@ router.route("/").get(basicSetup);
 router.route("/register").post(upload.none(), registerUser);
 // http://localhost:3005/api/v1/users/login
 router.route("/login").post(upload.none(), loginUser);
+// http://localhost:3005/api/v1/users/kyc
 router
   .route("/kyc")
   .post(upload.fields([{ name: "livePhoto", maxCount: 1 }]), kycVerification);
+// http://localhost:3005/api/v1/users/bank
+router.route("/bank").post(upload.none(), bankVerification);
 
 export default router;

@@ -103,7 +103,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   return res
-    .status(201)
+    .status(200)
     .json(new ApiResponse(200, null, "[+] Login Successfully"));
 });
 
@@ -130,4 +130,16 @@ const kycVerification = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, livePhoto, "[+] KYC verification Successfully"));
 });
 
-export { basicSetup, registerUser, loginUser, kycVerification };
+const bankVerification = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "[+] Bank Verifiication Successfully"));
+});
+
+export {
+  basicSetup,
+  registerUser,
+  bankVerification,
+  kycVerification,
+  loginUser,
+};
