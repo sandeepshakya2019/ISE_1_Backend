@@ -3,16 +3,17 @@ import {
   loginUser,
   registerUser,
   kycVerification,
+  basicSetup,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
-router.route("/").get(registerUser);
+router.route("/").get(basicSetup);
 // http://localhost:3005/api/v1/users/register
-http: router.route("/register").post(registerUser);
+router.route("/signup").post(upload.none(), registerUser);
 // http://localhost:3005/api/v1/users/login
-router.route("/login").post(loginUser);
+router.route("/login").post(upload.none(), loginUser);
 router
   .route("/kyc")
   .post(upload.fields([{ name: "livePhoto", maxCount: 1 }]), kycVerification);
