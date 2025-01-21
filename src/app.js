@@ -29,4 +29,7 @@ app.use("/", userRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/validate", validateRouter);
 
+// app.use("/api/v1/loan", validateRouter);
+// app.use("/api/v1/finance", validateRouter);
+
 export { app };
