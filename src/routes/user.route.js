@@ -11,7 +11,7 @@ const router = Router();
 
 router.route("/").get(basicSetup);
 // http://localhost:3005/api/v1/users/register
-router.route("/signup").post(upload.none(), registerUser);
+router.route("/register").post(upload.none(), registerUser);
 // http://localhost:3005/api/v1/users/login
 router.route("/login").post(upload.none(), loginUser);
 router
