@@ -71,19 +71,15 @@ const registerUser = asyncHandler(async (req, res) => {
     // res.status(400).json();
   } else {
     // check mobile no already exist
-    console.log(mobileNo, fullName, emailId);
+    // console.log(mobileNo, fullName, emailId);
     const existedUser = await User.findOne({
       $or: [{ mobileNo: mobileNo }, { emailId: emailId }],
     });
 
-    console.log(existedUser);
-
     if (existedUser) {
       errorMsg.userError = "[-] User Already Exists";
-    }
-
-    if (existedUser) throw new ApiError(400, errorMsg);
-    else {
+      throw new ApiError(400, errorMsg);
+    } else {
       const user = new User({
         mobileNo,
         // password,
