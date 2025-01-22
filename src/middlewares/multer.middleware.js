@@ -1,3 +1,4 @@
+import path from "path";
 import multer from "multer";
 
 const storage = multer.diskStorage({
@@ -6,7 +7,8 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
+    const ext = path.extname(file.originalname); // Extract the original file extension
+    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
   },
 });
 

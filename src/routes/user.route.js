@@ -16,9 +16,7 @@ router.route("/register").post(upload.none(), registerUser);
 // http://localhost:3005/api/v1/users/login
 router.route("/login").post(upload.none(), loginUser);
 // http://localhost:3005/api/v1/users/kyc
-router
-  .route("/kyc")
-  .post(upload.fields([{ name: "livePhoto", maxCount: 1 }]), kycVerification);
+router.route("/kyc").post(upload.single("livePhoto"), kycVerification);
 // http://localhost:3005/api/v1/users/bank
 router.route("/bank").post(upload.none(), bankVerification);
 

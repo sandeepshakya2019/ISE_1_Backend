@@ -5,69 +5,27 @@ import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import uploadOnCloudinary from "../utils/cloudinary.utils.js";
 
 import { User } from "../models/user.models.js";
+import { Kyc } from "../models/kyc.models.js";
+import {
+  registerValidation,
+  KYCValidate,
+  bankValidate,
+} from "../validations/user.validate.js";
+import { Bank } from "../models/bank.models.js";
 
 const basicSetup = asyncHandler((req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "Welcome to API "));
 });
 
 const registerUser = asyncHandler(async (req, res) => {
-  console.log("body", req.body);
-  let errorMsg = {
-    mobileNo: "",
-    password: "",
-    emailId: "",
-    fullName: "",
-    userError: "",
-  };
-  let isError = false;
   const { mobileNo, password, fullName, emailId } = req.body;
 
-  if (!mobileNo) {
-    errorMsg.mobileNo = "Mobile No is required";
-    isError = true;
-  } else {
-    if (mobileNo.length < 10) {
-      errorMsg.mobileNo = "Mobile No Should be greater then 10";
-      isError = true;
-    }
-    if (mobileNo.length > 10) {
-      errorMsg.mobileNo = "Mbile No Should be less then 10";
-      isError = true;
-    } else {
-      if (isNaN(mobileNo)) {
-        errorMsg.mobileNo = "Mobile No should be a digit";
-        isError = true;
-      }
-    }
-  }
+  let isError = registerValidation(req.body);
 
-  if (!fullName) {
-    errorMsg.fullName = "Full Name is required";
-    isError = true;
-  } else {
-    if (fullName.length < 4) {
-      errorMsg.fullName = "Full Name Should be greater then 4 Characters";
-      isError = true;
-    }
-  }
-
-  if (emailId.length > 0) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(emailId)) {
-      errorMsg.emailId = "Invalid Email Id";
-      isError = true;
-    }
-  }
-
-  // if (!password) {
-  //   errorMsg.password = "Password is required";
-  // }
-  // if(!emailId){
-  //   errorMsg.emailId = "Email Id is required";
-  // }
-
-  if (isError) {
-    throw new ApiError(400, errorMsg);
+  let errorMsg = { userError: "" };
+  console.log(isError);
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
     // res.status(400).json();
   } else {
     // check mobile no already exist
@@ -108,32 +66,109 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const kycVerification = asyncHandler(async (req, res) => {
-  console.log("Files", req.files);
+  console.log("Files", req.file);
   console.log("Body", req.body);
 
-  let errorMsg = { livePhoto: "", aadharCardId: "", incomeCertificateId: "" };
-  let isError = false;
-  const livePhotoPath = req.files?.livePhoto?.[0]?.path;
-  console.log(livePhotoPath);
+  let errorMsg = {
+    livePhoto: "",
+    userError: "",
+  };
+  const livePhotoPath = req.file?.path;
+
   if (!livePhotoPath) {
     errorMsg.livePhoto = "Live Photo is required";
     throw new ApiError(400, errorMsg);
   }
-  // upload on cloudinary
-  const livePhoto = await uploadOnCloudinary(livePhotoPath);
+  let isError = KYCValidate(req.body);
+
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
+  }
+
+  const livePhoto = await uploadOnCloudinary(
+    livePhotoPath,
+    req?.body?.userMobileNo
+  );
+
   if (!livePhoto) {
-    errorMsg.livePhoto = "Live Photo is required";
+    errorMsg.livePhoto = "Upload Faild";
     throw new ApiError(400, errorMsg);
   }
-  return res
-    .status(201)
-    .json(new ApiResponse(201, livePhoto, "[+] KYC verification Successfully"));
+
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
+    // res.status(400).json();
+  } else {
+    const existedUser = await User.findOne({
+      $or: [{ mobileNo: req.body.userMobileNo }],
+    });
+
+    if (existedUser) {
+      // Kyc;
+      const storedKyc = new Kyc({
+        aadharCardId,
+        rationCardId,
+        incomeCertificateId,
+        photo: livePhoto,
+        userid: existedUser._id,
+      });
+      const savedKyc = await storedKyc.save();
+      console.log(savedKyc);
+      if (savedKyc) {
+        return res
+          .status(201)
+          .json(new ApiResponse(201, savedKyc, "[+] KYC Saved Successfully"));
+      } else {
+        errorMsg.userError = "[-] Error in KYC Saving";
+        throw new ApiError(500, errorMsg);
+      }
+    } else {
+      errorMsg.userError = "[-] User Not Found";
+      throw new ApiError(400, errorMsg);
+    }
+  }
 });
 
 const bankVerification = asyncHandler(async (req, res) => {
-  return res
-    .status(200)
-    .json(new ApiResponse(200, null, "[+] Bank Verifiication Successfully"));
+  const isError = bankValidate(req.body);
+  const { mobileNo, accountNumber, ifscCode } = req.body;
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
+    // res.status(400).json();
+  } else {
+    if (isError[0]) {
+      throw new ApiError(400, isError[1]);
+      // res.status(400).json();
+    } else {
+      const existedUser = await User.findOne({
+        $or: [{ mobileNo: mobileNo }],
+      });
+
+      if (existedUser) {
+        // Kyc;
+        const storedBank = new Bank({
+          accountNumber,
+          ifscCode,
+          userid: existedUser._id,
+        });
+        const savedBank = await storedBank.save();
+        console.log(savedBank);
+        if (savedBank) {
+          return res
+            .status(201)
+            .json(
+              new ApiResponse(201, savedBank, "[+] Bank Saved Successfully")
+            );
+        } else {
+          errorMsg.userError = "[-] Error in Bank Saving";
+          throw new ApiError(500, errorMsg);
+        }
+      } else {
+        errorMsg.userError = "[-] User Not Found";
+        throw new ApiError(400, errorMsg);
+      }
+    }
+  }
 });
 
 export {
