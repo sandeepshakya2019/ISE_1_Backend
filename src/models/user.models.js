@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid emiail id !!`,
       },
     },
+    sectionedAmount: {
+      type: Number,
+      default: 0,
+    },
+    offeredAmount: {
+      type: Number,
+      default: 10000,
+    },
     rtoken: {
       type: String,
       required: false,

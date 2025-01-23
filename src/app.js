@@ -23,13 +23,15 @@ app.use(cookieParser());
 // import routes
 import userRouter from "./routes/user.route.js";
 import validateRouter from "./routes/validate.route.js";
-
-app.use("/", userRouter);
+import PaymentRoute from "./routes/payment.route.js";
+import loanRoute from "./routes/loan.route.js";
 
 app.use("/api/v1/users", userRouter);
+
 app.use("/api/v1/validate", validateRouter);
 
-// app.use("/api/v1/loan", validateRouter);
+app.use("/api/v1/payment", PaymentRoute);
+app.use("/api/v1/loan", loanRoute);
 // app.use("/api/v1/finance", validateRouter);
 
 export { app };
