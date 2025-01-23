@@ -42,6 +42,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    otp: {
+      type: Number,
+      default: null,
+    },
+    otpExpiresAt: {
+      type: Date,
+      default: null, // Default value for expiration is null
+    },
     // userName:{
     //   type: String,
     //   unique: true,

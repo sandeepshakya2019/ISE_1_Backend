@@ -10,8 +10,10 @@ import {
   registerValidation,
   KYCValidate,
   bankValidate,
+  validateLoginUser,
 } from "../validations/user.validate.js";
 import { Bank } from "../models/bank.models.js";
+import { sendOtp } from "../utils/sendOTP.utils.js";
 
 const basicSetup = asyncHandler((req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "Welcome to API "));
@@ -59,10 +61,78 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-const loginUser = asyncHandler(async (req, res) => {
-  return res
-    .status(200)
-    .json(new ApiResponse(200, null, "[+] Login Successfully"));
+const loginOTP = asyncHandler(async (req, res) => {
+  let isError = validateLoginUser(req.body);
+  let errorMsg = { userError: "" };
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
+  } else {
+    const { mobileNo } = req.body;
+    const user = await User.findOne({ mobileNo });
+    if (!user) {
+      errorMsg.userError = "[-] User Not Found";
+      throw new ApiError(401, errorMsg);
+    }
+
+    // add a api to send the otp and store to backend and check the otp
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const result = await sendOtp(phoneNumber, otp);
+
+    if (result.success) {
+      const result = await User.updateOne(
+        { mobileNo },
+        {
+          otp, // Set the OTP
+          otpExpiresAt: Date.now() + 5 * 60 * 1000, // Set OTP expiration to 5 minutes from now
+        }
+      );
+      if (result) {
+        res.status(200).json(new ApiResponse(200, {}, "[+] OTP Successfully"));
+      } else {
+        errorMsg.userError = "[-] Error in Saving OTP";
+        throw new ApiError(500, errorMsg);
+      }
+    } else {
+      errorMsg.userError = "[-] Error in Sending OTP";
+      throw new ApiError(500, errorMsg);
+    }
+  }
+});
+
+const loginToken = asyncHandler(async (req, res) => {
+  let isError = VlidateUserAndOTP(req.body);
+  let errorMsg = { userError: "" };
+  if (isError[0]) {
+    throw new ApiError(400, isError[1]);
+  } else {
+    const { mobileNo, otp } = req.body;
+
+    const user = await User.findOne({ mobileNo });
+
+    if (!user) {
+      errorMsg.userError = "[-] User Not Found";
+      throw new ApiError(401, errorMsg);
+    }
+
+    if (user.otp !== otp) {
+      errorMsg.userError = "[-] Invalid OTP";
+      throw new ApiError(401, errorMsg);
+    }
+
+    if (user.otpExpiresAt < Date.now()) {
+      errorMsg.userError = "[-] OTP Expired";
+      throw new ApiError(401, errorMsg);
+    }
+
+    // remove the otp and otpExpiresAt
+    await User.updateOne({ mobileNo }, { otp: null, otpExpiresAt: null });
+    // access and refresh token
+    const token = user.generateToken();
+    // send cookie
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { user, token }, "[+] Login Successfully"));
+  }
 });
 
 const kycVerification = asyncHandler(async (req, res) => {
@@ -176,5 +246,6 @@ export {
   registerUser,
   bankVerification,
   kycVerification,
-  loginUser,
+  loginOTP,
+  loginToken,
 };

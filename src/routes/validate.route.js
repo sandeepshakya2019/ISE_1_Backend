@@ -4,7 +4,7 @@ import {
   bankVerification,
   rationVerification,
   incomeVerification,
-} from "../controllers/validateDetails.controllers.js";
+} from "../controllers/specialvalidate.controllers.js";
 // import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();

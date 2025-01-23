@@ -162,6 +162,110 @@ export const KYCValidate = (body) => {
   }
 };
 
-export const bankValidate = () => {
-  return true;
+export const validateLoginUser = (body) => {
+  console.log("Login Validation", body);
+  let errorMsg = {
+    mobileNo: "",
+  };
+  let isError = false;
+  const { mobileNo } = body;
+  if (!mobileNo) {
+    errorMsg.mobileNo = "Mobile No is required";
+    isError = true;
+  } else {
+    if (mobileNo.length < 10) {
+      errorMsg.mobileNo = "Mobile No Should be greater then 10";
+      isError = true;
+    }
+    if (mobileNo.length > 10) {
+      errorMsg.mobileNo = "Mbile No Should be less then 10";
+      isError = true;
+    } else {
+      if (isNaN(mobileNo)) {
+        errorMsg.mobileNo = "Mobile No should be a digit";
+        isError = true;
+      }
+    }
+  }
+
+  if (isError) {
+    return [true, errorMsg];
+  } else {
+    return [false, errorMsg];
+  }
+};
+
+export const VlidateUserAndOTP = (body) => {
+  console.log("Login Validation", body);
+  let errorMsg = {
+    mobileNo: "",
+    otpError: "",
+  };
+  let isError = false;
+  const { mobileNo, otp } = body;
+  if (!mobileNo) {
+    errorMsg.mobileNo = "Mobile No is required";
+    isError = true;
+  } else {
+    if (mobileNo.length < 10) {
+      errorMsg.mobileNo = "Mobile No Should be greater then 10";
+      isError = true;
+    }
+    if (mobileNo.length > 10) {
+      errorMsg.mobileNo = "Mbile No Should be less then 10";
+      isError = true;
+    } else {
+      if (isNaN(mobileNo)) {
+        errorMsg.mobileNo = "Mobile No should be a digit";
+        isError = true;
+      }
+    }
+  }
+  if (!otp) {
+    errorMsg.mobileNo = "OTP is required";
+    isError = true;
+  } else {
+    if (mobileNo.length != 6) {
+      errorMsg.mobileNo = "OTP Should be 6 digits";
+      isError = true;
+    } else {
+      if (isNaN(mobileNo)) {
+        errorMsg.mobileNo = "OTP should be a digit";
+        isError = true;
+      }
+    }
+  }
+
+  if (isError) {
+    return [true, errorMsg];
+  } else {
+    return [false, errorMsg];
+  }
+};
+
+export const bankValidate = (body) => {
+  const { mobileNo, accountNumber, ifscCode } = body;
+  let errorMsg = {
+    mobileNo: "",
+    accountNumber: "",
+    ifscCode: "",
+  };
+  isError = false;
+  if (mobileNo?.length !== 10) {
+    errorMsg.mobileNo = "Invalid Mobile No";
+    isError = true;
+  }
+  if (accountNumber?.length < 12 || accountNumber?.length > 18) {
+    errorMsg.accountNumber = "Invalid Account Number";
+    isError = true;
+  }
+  if (ifscCode?.length !== 11) {
+    errorMsg.ifscCode = "Invalid IFSC Code";
+    isError = true;
+  }
+  if (isError) {
+    return [true, errorMsg];
+  } else {
+    return [false, errorMsg];
+  }
 };

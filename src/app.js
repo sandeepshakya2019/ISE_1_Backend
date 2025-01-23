@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 // import routes
 import userRouter from "./routes/user.route.js";
-import validateRouter from "./routes/validateDetails.route.js";
+import validateRouter from "./routes/validate.route.js";
 
 app.use("/", userRouter);
 
