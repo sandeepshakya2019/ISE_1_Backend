@@ -31,7 +31,6 @@ All good response :
     "success": false,
     "message": {
         "mobileNo": "Mobile No Should be greater then 10",
-        "password": "",
         "emailId": "",
         "fullName": "",
         "userError": ""

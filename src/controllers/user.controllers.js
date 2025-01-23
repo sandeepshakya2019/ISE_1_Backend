@@ -38,7 +38,7 @@ const basicSetup = asyncHandler((req, res) => {
 });
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { mobileNo, password, fullName, emailId } = req.body;
+  const { mobileNo, fullName, emailId } = req.body;
 
   let isError = registerValidation(req.body);
 
@@ -60,11 +60,9 @@ const registerUser = asyncHandler(async (req, res) => {
     } else {
       const user = new User({
         mobileNo,
-        // password,
         fullName,
         emailId: emailId?.toLowerCase() || "",
       });
-      // hashed password already in the pre method
       const savedUser = await user.save();
       console.log(savedUser);
       if (savedUser) {
@@ -226,7 +224,6 @@ const kycVerification = asyncHandler(async (req, res) => {
       const storedKyc = new Kyc({
         aadharCardId,
         rationCardId,
-        incomeCertificateId,
         photo: livePhoto,
         userid: existedUser._id,
       });

@@ -2,13 +2,12 @@ export const registerValidation = (body) => {
   console.log("Register Validation", body);
   let errorMsg = {
     mobileNo: "",
-    password: "",
     emailId: "",
     fullName: "",
     userError: "",
   };
   let isError = false;
-  const { mobileNo, password, fullName, emailId } = body;
+  const { mobileNo, fullName, emailId } = body;
 
   if (!mobileNo) {
     errorMsg.mobileNo = "Mobile No is required";
@@ -47,13 +46,6 @@ export const registerValidation = (body) => {
     }
   }
 
-  // if (!password) {
-  //   errorMsg.password = "Password is required";
-  // }
-  // if(!emailId){
-  //   errorMsg.emailId = "Email Id is required";
-  // }
-  console.log("check", isError);
   if (isError) {
     return [true, errorMsg];
   } else {
@@ -63,13 +55,11 @@ export const registerValidation = (body) => {
 
 export const KYCValidate = (body) => {
   console.log("KYC Vaidate", body);
-  const { aadharCardId, rationCardId, incomeCertificateId, userMobileNo } =
-    body;
+  const { aadharCardId, rationCardId, userMobileNo } = body;
 
   let errorMsg = {
     livePhoto: "",
     aadharCardId: "",
-    incomeCertificateId: "",
     userMobileNo: "",
     rationCardId: "",
   };
@@ -108,28 +98,6 @@ export const KYCValidate = (body) => {
     } else {
       if (isNaN(rationCardId)) {
         errorMsg.rationCardId = "rationCardId No should be a digit";
-        isError = true;
-      }
-    }
-  }
-
-  if (!incomeCertificateId) {
-    // errorMsg.incomeCertificateId = "incomeCertificateId No is required";
-    // isError = true;
-  } else {
-    if (incomeCertificateId.length < 12) {
-      errorMsg.incomeCertificateId =
-        "incomeCertificateId No Should be greater then 12";
-      isError = true;
-    }
-    if (incomeCertificateId.length > 12) {
-      errorMsg.incomeCertificateId =
-        "incomeCertificateId No Should be less then 12";
-      isError = true;
-    } else {
-      if (isNaN(incomeCertificateId)) {
-        errorMsg.incomeCertificateId =
-          "incomeCertificateId No should be a digit";
         isError = true;
       }
     }
