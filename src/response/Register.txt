@@ -1,0 +1,39 @@
+Failed Response User Already Exists
+
+{
+    "success": false,
+    "message": {
+        "userError": "[-] User Already Exists"
+    }
+}
+
+All good response :
+
+{
+    "statusCode": 201,
+    "message": {
+        "mobileNo": "9457193372",
+        "fullName": "Sandeep Kumar",
+        "emailId": "sandeepshakya2015@gmail.com",
+        "otp": null,
+        "otpExpiresAt": null,
+        "_id": "6791fc120546dcd2697968f4",
+        "createdAt": "2025-01-23T08:21:38.684Z",
+        "updatedAt": "2025-01-23T08:21:38.684Z",
+        "__v": 0
+    },
+    "data": "[+] User Registered Successfully",
+    "success": true
+}
+
+// Any other error
+{
+    "success": false,
+    "message": {
+        "mobileNo": "Mobile No Should be greater then 10",
+        "password": "",
+        "emailId": "",
+        "fullName": "",
+        "userError": ""
+    }
+}

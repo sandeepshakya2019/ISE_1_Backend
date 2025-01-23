@@ -100,8 +100,8 @@ userSchema.plugin(mongooseAggregatePaginate);
 // };
 
 // Adding custom methods for jwt
-userSchema.methods.generateToken = async function () {
-  jwt.sign(
+userSchema.methods.generateToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
       mobileNo: this.mobileNo,
@@ -114,8 +114,8 @@ userSchema.methods.generateToken = async function () {
   );
 };
 
-userSchema.methods.refreshToken = async function () {
-  jwt.sign(
+userSchema.methods.refreshToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
     },

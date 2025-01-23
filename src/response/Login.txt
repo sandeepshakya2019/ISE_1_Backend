@@ -1,0 +1,91 @@
+// User not found
+{
+    "success": false,
+    "message": {
+        "userError": "[-] User Not Found"
+    }
+}
+
+{
+    "success": false,
+    "message": {
+        "mobileNo": "Mobile No Should be greater then 10"
+    }
+}
+
+// error
+
+{
+    "success": false,
+    "message": {
+        "mobileNo": "Mobile No is required"
+    }
+}
+
+
+// otp 
+
+{
+    "success": false,
+    "message": {
+        "userError": "[-] Invalid OTP"
+    }
+}
+
+
+{
+    "success": false,
+    "message": {
+        "mobileNo": "OTP is required",
+        "otpError": ""
+    }
+}
+
+{
+    "success": false,
+    "message": {
+        "mobileNo": "Mobile No is required",
+        "otpError": ""
+    }
+}
+
+{
+    "statusCode": 200,
+    "message": {
+        "user": {
+            "_id": "6791fc120546dcd2697968f4",
+            "mobileNo": "9084043946",
+            "fullName": "Sandeep Kumar",
+            "emailId": "sandeepshakya2015@gmail.com",
+            "otp": 565620,
+            "otpExpiresAt": null,
+            "createdAt": "2025-01-23T08:21:38.684Z",
+            "updatedAt": "2025-01-23T08:48:49.261Z",
+            "__v": 0
+        }
+    },
+    "data": "[+] Login Successfully",
+    "success": true
+}
+
+{
+    "statusCode": 200,
+    "message": {
+        "user": {
+            "_id": "6791fc120546dcd2697968f4",
+            "mobileNo": "9084043946",
+            "fullName": "Sandeep Kumar",
+            "emailId": "sandeepshakya2015@gmail.com",
+            "otp": 565620,
+            "otpExpiresAt": null,
+            "createdAt": "2025-01-23T08:21:38.684Z",
+            "updatedAt": "2025-01-23T09:07:47.131Z",
+            "__v": 0,
+            "rtoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzkxZmMxMjA1NDZkY2QyNjk3OTY4ZjQiLCJpYXQiOjE3Mzc2MjMyNjcsImV4cCI6MTczODQ4NzI2N30.lj4GZ7SYwQH39WCjQzPUFy5ZB8x4DMMfyci61jp9Dqo"
+        },
+        "refresht": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzkxZmMxMjA1NDZkY2QyNjk3OTY4ZjQiLCJpYXQiOjE3Mzc2MjMzMjYsImV4cCI6MTczODQ4NzMyNn0._yFUakMlmL8vJMpkcZwSh3E7hEHiv6BBPE-tEkUY2dc",
+        "accesst": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzkxZmMxMjA1NDZkY2QyNjk3OTY4ZjQiLCJtb2JpbGVObyI6IjkwODQwNDM5NDYiLCJmdWxsTmFtZSI6IlNhbmRlZXAgS3VtYXIiLCJpYXQiOjE3Mzc2MjMzMjYsImV4cCI6MTczNzcwOTcyNn0.vKZOGUsPTaWv5VBIv0ykKKI_sQvjG-pkLuk-RakJwNg"
+    },
+    "data": "[+] Login Successfully",
+    "success": true
+}

@@ -195,7 +195,7 @@ export const validateLoginUser = (body) => {
   }
 };
 
-export const VlidateUserAndOTP = (body) => {
+export const ValidateUserAndOTP = (body) => {
   console.log("Login Validation", body);
   let errorMsg = {
     mobileNo: "",
@@ -222,15 +222,15 @@ export const VlidateUserAndOTP = (body) => {
     }
   }
   if (!otp) {
-    errorMsg.mobileNo = "OTP is required";
+    errorMsg.otp = "OTP is required";
     isError = true;
   } else {
-    if (mobileNo.length != 6) {
-      errorMsg.mobileNo = "OTP Should be 6 digits";
+    if (otp.length != 6) {
+      errorMsg.otp = "OTP Should be 6 digits";
       isError = true;
     } else {
-      if (isNaN(mobileNo)) {
-        errorMsg.mobileNo = "OTP should be a digit";
+      if (isNaN(otp)) {
+        errorMsg.otp = "OTP should be a digit";
         isError = true;
       }
     }

@@ -11,6 +11,7 @@ import {
   KYCValidate,
   bankValidate,
   validateLoginUser,
+  ValidateUserAndOTP,
 } from "../validations/user.validate.js";
 import { Bank } from "../models/bank.models.js";
 import { sendOtp } from "../utils/sendOTP.utils.js";
@@ -18,12 +19,13 @@ import { sendOtp } from "../utils/sendOTP.utils.js";
 const genrateAccessandRefreshToken = async (userid) => {
   try {
     const user = await User.findById(userid);
-    const access = user.generateToken();
-    const refresh = user.refreshToken();
-    user.refreshToken = refresh;
-    await user.save({ validateBeforeSave: false });
-    return { access, refresh };
+    const accesst = user.generateToken();
+    const refresht = user.refreshToken();
+    user.rtoken = refresht;
+    await user.save();
+    return { accesst, refresht };
   } catch (error) {
+    console.log("error", error);
     throw new ApiError(500, {
       userError: "Something Went Wrong while genrating access Tokens",
     });
@@ -82,7 +84,7 @@ const loginOTP = asyncHandler(async (req, res) => {
   if (isError[0]) {
     throw new ApiError(400, isError[1]);
   } else {
-    const { mobileNo } = req.body;
+    let { mobileNo } = req.body;
     const user = await User.findOne({ mobileNo });
     if (!user) {
       errorMsg.userError = "[-] User Not Found";
@@ -91,7 +93,7 @@ const loginOTP = asyncHandler(async (req, res) => {
 
     // add a api to send the otp and store to backend and check the otp
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const result = await sendOtp(phoneNumber, otp);
+    const result = await sendOtp(mobileNo, otp);
 
     if (result.success) {
       const result = await User.updateOne(
@@ -115,7 +117,7 @@ const loginOTP = asyncHandler(async (req, res) => {
 });
 
 const loginToken = asyncHandler(async (req, res) => {
-  let isError = VlidateUserAndOTP(req.body);
+  let isError = ValidateUserAndOTP(req.body);
   let errorMsg = { userError: "" };
   if (isError[0]) {
     throw new ApiError(400, isError[1]);
@@ -123,13 +125,12 @@ const loginToken = asyncHandler(async (req, res) => {
     const { mobileNo, otp } = req.body;
 
     const user = await User.findOne({ mobileNo });
-
     if (!user) {
       errorMsg.userError = "[-] User Not Found";
       throw new ApiError(401, errorMsg);
     }
 
-    if (user.otp !== otp) {
+    if (user.otp !== Number(otp)) {
       errorMsg.userError = "[-] Invalid OTP";
       throw new ApiError(401, errorMsg);
     }
@@ -143,19 +144,23 @@ const loginToken = asyncHandler(async (req, res) => {
     await User.updateOne({ mobileNo }, { otp: null, otpExpiresAt: null });
     // access and refresh token
 
-    const { accessToken, refreshToken } = await genrateAccessandRefreshToken(
-      user._id
-    );
-    // send cookie
+    const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);
+
     const options = {
       httpOnly: true,
       secure: true,
     };
     return res
       .status(200)
-      .cookie("refreshToken", refreshToken, options)
-      .cookie("accessToken", accessToken, options)
-      .json(new ApiResponse(200, { user, tokens }, "[+] Login Successfully"));
+      .cookie("refreshToken", refresht, options)
+      .cookie("accessToken", accesst, options)
+      .json(
+        new ApiResponse(
+          200,
+          { user, refresht, accesst },
+          "[+] Login Successfully"
+        )
+      );
   }
 });
 

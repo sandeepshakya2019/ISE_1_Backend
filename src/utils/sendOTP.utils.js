@@ -16,12 +16,13 @@ export const sendOtp = async (phoneNumber, otp) => {
   if (!phoneNumber || !otp) {
     throw new Error("Phone number and OTP are required.");
   }
+  let mobileNo = "+91 " + phoneNumber;
 
   try {
     const message = await client.messages.create({
       body: `Your OTP is: ${otp}`,
       from: twilioPhoneNumber,
-      to: phoneNumber,
+      to: mobileNo,
     });
 
     return {
