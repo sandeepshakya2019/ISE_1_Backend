@@ -131,7 +131,6 @@ export const KYCValidate = (body) => {
 };
 
 export const validateLoginUser = (body) => {
-  console.log("Login Validation", body);
   let errorMsg = {
     mobileNo: "",
   };
