@@ -25,6 +25,7 @@ import userRouter from "./routes/user.route.js";
 import validateRouter from "./routes/validate.route.js";
 import PaymentRoute from "./routes/payment.route.js";
 import loanRoute from "./routes/loan.route.js";
+import profileRoute from "./routes/profile.route.js";
 
 app.use("/api/v1/users", userRouter);
 
@@ -32,6 +33,8 @@ app.use("/api/v1/validate", validateRouter);
 
 app.use("/api/v1/payment", PaymentRoute);
 app.use("/api/v1/loan", loanRoute);
+app.use("/api/v1/profile", profileRoute);
+
 // app.use("/api/v1/finance", validateRouter);
 
 export { app };

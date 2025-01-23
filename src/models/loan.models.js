@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const loanDetailsSchema = new mongoose.Schema(
   {
-    loanAmount: {
+    totalLoanAmount: {
       type: Number,
       required: true,
     },
@@ -19,6 +19,14 @@ const loanDetailsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    leftAmount: {
+      type: Number,
+      default: 0,
+    },
+    paybackAmount: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
