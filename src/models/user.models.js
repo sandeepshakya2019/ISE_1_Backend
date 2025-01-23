@@ -51,23 +51,12 @@ const userSchema = new mongoose.Schema(
     },
     otpExpiresAt: {
       type: Date,
-      default: null, // Default value for expiration is null
+      default: null,
     },
     isKYC: {
       type: Boolean,
       default: false,
     },
-    // kycDetails: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Kyc",
-    //   required: true,
-    // },
-    // loanDetails: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Loan",
-    //   },
-    // ],
   },
   { timestamps: true }
 );

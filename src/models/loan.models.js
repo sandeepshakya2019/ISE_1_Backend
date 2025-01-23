@@ -11,9 +11,9 @@ const loanDetailsSchema = new mongoose.Schema(
       required: true,
     },
     loanStatus: {
-      // enum "Pending", "Completed", "Rejected"
+      // enum "Requested", "Physical Verification" ,"Pending", "Approved", "Rejected"
       type: String,
-      default: "Pending",
+      default: "Requested",
     },
     userid: {
       type: mongoose.Schema.Types.ObjectId,

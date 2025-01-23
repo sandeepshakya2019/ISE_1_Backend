@@ -41,13 +41,10 @@ const registerUser = asyncHandler(async (req, res) => {
   let isError = registerValidation(req.body);
 
   let errorMsg = { userError: "" };
-  console.log(isError);
+
   if (isError[0]) {
     throw new ApiError(400, isError[1]);
-    // res.status(400).json();
   } else {
-    // check mobile no already exist
-    // console.log(mobileNo, fullName, emailId);
     const existedUser = await User.findOne({
       $or: [{ mobileNo: mobileNo }, { emailId: emailId }],
     });
@@ -62,7 +59,6 @@ const registerUser = asyncHandler(async (req, res) => {
         emailId: emailId?.toLowerCase() || "",
       });
       const savedUser = await user.save();
-      console.log(savedUser);
       if (savedUser) {
         return res
           .status(201)
@@ -88,7 +84,6 @@ const loginOTP = asyncHandler(async (req, res) => {
       throw new ApiError(401, errorMsg);
     }
 
-    // add a api to send the otp and store to backend and check the otp
     const otp = Math.floor(100000 + Math.random() * 900000);
     const result = await sendOtp(mobileNo, otp);
 
@@ -96,12 +91,14 @@ const loginOTP = asyncHandler(async (req, res) => {
       const result = await User.updateOne(
         { mobileNo },
         {
-          otp, // Set the OTP
-          otpExpiresAt: Date.now() + 5 * 60 * 1000, // Set OTP expiration to 5 minutes from now
+          otp,
+          otpExpiresAt: Date.now() + 5 * 60 * 1000,
         }
       );
       if (result) {
-        res.status(200).json(new ApiResponse(200, {}, "[+] OTP Successfully"));
+        res
+          .status(200)
+          .json(new ApiResponse(200, {}, "[+] OTP Send Successfully"));
       } else {
         errorMsg.userError = "[-] Error in Saving OTP";
         throw new ApiError(500, errorMsg);
@@ -280,6 +277,7 @@ const refreshLoginToken = asyncHandler(async (req, res) => {
       new ApiResponse(200, { refresht, accesst }, "[+] Access Token Refreshed")
     );
 });
+
 export {
   basicSetup,
   registerUser,
