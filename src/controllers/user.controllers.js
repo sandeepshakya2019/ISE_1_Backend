@@ -9,11 +9,9 @@ import { Kyc } from "../models/kyc.models.js";
 import {
   registerValidation,
   KYCValidate,
-  bankValidate,
   validateLoginUser,
   ValidateUserAndOTP,
 } from "../validations/user.validate.js";
-import { Bank } from "../models/bank.models.js";
 import { sendOtp } from "../utils/sendOTP.utils.js";
 import jwt from "jsonwebtoken";
 
@@ -184,6 +182,7 @@ const logout = asyncHandler(async (req, res) => {
 const kycVerification = asyncHandler(async (req, res) => {
   console.log("Files", req.file);
   console.log("Body", req.body);
+  console.log("User", req.user);
 
   let errorMsg = {
     livePhoto: "",
@@ -215,15 +214,14 @@ const kycVerification = asyncHandler(async (req, res) => {
     throw new ApiError(400, isError[1]);
     // res.status(400).json();
   } else {
-    const existedUser = await User.findOne({
-      $or: [{ mobileNo: req.body.userMobileNo }],
-    });
+    const existedUser = await User.findById(req.user._id);
 
     if (existedUser) {
       // Kyc;
       const storedKyc = new Kyc({
         aadharCardId,
-        rationCardId,
+        accountNumber,
+        ifscCode,
         photo: livePhoto,
         userid: existedUser._id,
       });
@@ -240,48 +238,6 @@ const kycVerification = asyncHandler(async (req, res) => {
     } else {
       errorMsg.userError = "[-] User Not Found";
       throw new ApiError(400, errorMsg);
-    }
-  }
-});
-
-const bankVerification = asyncHandler(async (req, res) => {
-  const isError = bankValidate(req.body);
-  const { mobileNo, accountNumber, ifscCode } = req.body;
-  if (isError[0]) {
-    throw new ApiError(400, isError[1]);
-    // res.status(400).json();
-  } else {
-    if (isError[0]) {
-      throw new ApiError(400, isError[1]);
-      // res.status(400).json();
-    } else {
-      const existedUser = await User.findOne({
-        $or: [{ mobileNo: mobileNo }],
-      });
-
-      if (existedUser) {
-        // Kyc;
-        const storedBank = new Bank({
-          accountNumber,
-          ifscCode,
-          userid: existedUser._id,
-        });
-        const savedBank = await storedBank.save();
-        console.log(savedBank);
-        if (savedBank) {
-          return res
-            .status(201)
-            .json(
-              new ApiResponse(201, savedBank, "[+] Bank Saved Successfully")
-            );
-        } else {
-          errorMsg.userError = "[-] Error in Bank Saving";
-          throw new ApiError(500, errorMsg);
-        }
-      } else {
-        errorMsg.userError = "[-] User Not Found";
-        throw new ApiError(400, errorMsg);
-      }
     }
   }
 });
@@ -327,7 +283,6 @@ const refreshLoginToken = asyncHandler(async (req, res) => {
 export {
   basicSetup,
   registerUser,
-  bankVerification,
   kycVerification,
   loginOTP,
   loginToken,

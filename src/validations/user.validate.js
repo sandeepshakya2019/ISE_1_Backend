@@ -55,15 +55,28 @@ export const registerValidation = (body) => {
 
 export const KYCValidate = (body) => {
   console.log("KYC Vaidate", body);
-  const { aadharCardId, rationCardId, userMobileNo } = body;
+  const { aadharCardId, accountNumber, ifscCode } = body;
 
   let errorMsg = {
     livePhoto: "",
     aadharCardId: "",
-    userMobileNo: "",
-    rationCardId: "",
+    accountNumber: "",
+    ifscCode: "",
   };
   let isError = false;
+
+  if (mobileNo?.length !== 10) {
+    errorMsg.mobileNo = "Invalid Mobile No";
+    isError = true;
+  }
+  if (accountNumber?.length < 12 || accountNumber?.length > 18) {
+    errorMsg.accountNumber = "Invalid Account Number";
+    isError = true;
+  }
+  if (ifscCode?.length !== 11) {
+    errorMsg.ifscCode = "Invalid IFSC Code";
+    isError = true;
+  }
 
   if (!aadharCardId) {
     errorMsg.mobileNo = "Aadhar Card No is required";
@@ -79,44 +92,6 @@ export const KYCValidate = (body) => {
     } else {
       if (isNaN(aadharCardId)) {
         errorMsg.aadharCardId = "Aadhar Card No should be a digit";
-        isError = true;
-      }
-    }
-  }
-
-  if (!rationCardId) {
-    errorMsg.rationCardId = "rationCardId No is required";
-    isError = true;
-  } else {
-    if (rationCardId.length < 12) {
-      errorMsg.rationCardId = "rationCardId No Should be greater then 12";
-      isError = true;
-    }
-    if (rationCardId.length > 12) {
-      errorMsg.rationCardId = "rationCardId No Should be less then 12";
-      isError = true;
-    } else {
-      if (isNaN(rationCardId)) {
-        errorMsg.rationCardId = "rationCardId No should be a digit";
-        isError = true;
-      }
-    }
-  }
-
-  if (!userMobileNo) {
-    errorMsg.userMobileNo = "userMobileNo No is required";
-    isError = true;
-  } else {
-    if (userMobileNo.length < 10) {
-      errorMsg.userMobileNo = "userMobileNo No Should be greater then 10";
-      isError = true;
-    }
-    if (userMobileNo.length > 10) {
-      errorMsg.userMobileNo = "userMobileNo No Should be less then 10";
-      isError = true;
-    } else {
-      if (isNaN(userMobileNo)) {
-        errorMsg.userMobileNo = "userMobileNo No should be a digit";
         isError = true;
       }
     }
@@ -203,33 +178,6 @@ export const ValidateUserAndOTP = (body) => {
     }
   }
 
-  if (isError) {
-    return [true, errorMsg];
-  } else {
-    return [false, errorMsg];
-  }
-};
-
-export const bankValidate = (body) => {
-  const { mobileNo, accountNumber, ifscCode } = body;
-  let errorMsg = {
-    mobileNo: "",
-    accountNumber: "",
-    ifscCode: "",
-  };
-  isError = false;
-  if (mobileNo?.length !== 10) {
-    errorMsg.mobileNo = "Invalid Mobile No";
-    isError = true;
-  }
-  if (accountNumber?.length < 12 || accountNumber?.length > 18) {
-    errorMsg.accountNumber = "Invalid Account Number";
-    isError = true;
-  }
-  if (ifscCode?.length !== 11) {
-    errorMsg.ifscCode = "Invalid IFSC Code";
-    isError = true;
-  }
   if (isError) {
     return [true, errorMsg];
   } else {

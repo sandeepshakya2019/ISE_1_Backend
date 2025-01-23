@@ -62,21 +62,10 @@ const userSchema = new mongoose.Schema(
     //   ref: "Kyc",
     //   required: true,
     // },
-    // bankDetails: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Bank",
-    //   required: true,
-    // },
     // loanDetails: [
     //   {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: "Loan",
-    //   },
-    // ],
-    // financeDetails: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Finance",
     //   },
     // ],
   },

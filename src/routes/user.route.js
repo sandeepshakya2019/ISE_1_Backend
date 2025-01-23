@@ -3,7 +3,6 @@ import {
   registerUser,
   kycVerification,
   basicSetup,
-  bankVerification,
   loginToken,
   loginOTP,
   logout,
@@ -30,8 +29,5 @@ router.route("/logout").post(upload.none(), auth, logout);
 
 // http://localhost:3005/api/v1/users/kyc
 router.route("/kyc").post(upload.single("livePhoto"), auth, kycVerification);
-
-// http://localhost:3005/api/v1/users/bank
-router.route("/bank").post(upload.none(), auth, bankVerification);
 
 export default router;
