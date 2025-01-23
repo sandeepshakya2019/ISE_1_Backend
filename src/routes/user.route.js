@@ -7,6 +7,7 @@ import {
   loginToken,
   loginOTP,
   logout,
+  refreshLoginToken,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { auth } from "../middlewares/auth.middleware.js";
@@ -23,6 +24,7 @@ router.route("/login-otp").post(upload.none(), loginOTP);
 router.route("/login-token").post(upload.none(), loginToken);
 
 // Secured Routes
+router.route("/refresh-token").post(upload.none(), auth, refreshLoginToken);
 
 router.route("/logout").post(upload.none(), auth, logout);
 

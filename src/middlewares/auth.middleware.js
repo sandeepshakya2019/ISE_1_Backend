@@ -12,7 +12,7 @@ export const auth = asyncHandler(async (req, res, next) => {
       throw new ApiError(401, { userError: "No Refresh token" });
     }
 
-    const decodeToken = await jwt.verify(
+    const decodeToken = jwt.verify(
       refreshTokesn,
       process.env.ACCESS_TOKEN_SECRET
     );
@@ -28,18 +28,4 @@ export const auth = asyncHandler(async (req, res, next) => {
   } catch (error) {
     throw new ApiError(401, { userError: "Invalid Refresh token Error" });
   }
-  //   const accessToken = jwt.sign(
-  //     { _id: user._id },
-  //     process.env.ACCESS_TOKEN_SECRET,
-  //     { expiresIn: "15m" }
-  //   );
-  //   res.cookie("accessToken", accessToken, { expiresIn: "15m" });
-  //   res.json({ accessToken });
-  //   next();
-  // const accessToken = generateAccessToken(user);
-  // res.json({ accessToken });
-  // next();
-  // res.status(200).json({ message: "Logged In Successfully" });
-  // res.cookie("refreshToken", refreshToken, { expiresIn: "7d" });
-  // res.json({ message: "Logged In Successfully" });
 });

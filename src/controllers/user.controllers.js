@@ -15,6 +15,7 @@ import {
 } from "../validations/user.validate.js";
 import { Bank } from "../models/bank.models.js";
 import { sendOtp } from "../utils/sendOTP.utils.js";
+import jwt from "jsonwebtoken";
 
 const genrateAccessandRefreshToken = async (userid) => {
   try {
@@ -288,6 +289,44 @@ const bankVerification = asyncHandler(async (req, res) => {
   }
 });
 
+const refreshLoginToken = asyncHandler(async (req, res) => {
+  const incomeingtoken = req.cookies?.refreshToken || req.body.refreshToken;
+  let errorMsg = {
+    tokenError: "",
+  };
+  if (!incomeingtoken) {
+    errorMsg.tokenError = "[-] Token is required";
+    throw new ApiError(400, errorMsg);
+  }
+  const decoToken = jwt.verify(incomeingtoken, process.env.ACCESS_TOKEN_SECRET);
+  if (!decoToken) {
+    errorMsg.tokenError = "[-] Invalid Token";
+    throw new ApiError(401, errorMsg);
+  }
+  const user = await User.findById(decoToken?._id);
+  if (!user) {
+    errorMsg.tokenError = "[-] User Not Found";
+    throw new ApiError(401, errorMsg);
+  }
+  if (incomeingtoken !== user?.rtoken) {
+    errorMsg.tokenError = "[-] Token Mismatch or Expired";
+    throw new ApiError(401, errorMsg);
+  }
+
+  const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("refreshToken", refresht, options)
+    .cookie("accessToken", accesst, options)
+    .json(
+      new ApiResponse(200, { refresht, accesst }, "[+] Access Token Refreshed")
+    );
+});
 export {
   basicSetup,
   registerUser,
@@ -296,4 +335,5 @@ export {
   loginOTP,
   loginToken,
   logout,
+  refreshLoginToken,
 };
