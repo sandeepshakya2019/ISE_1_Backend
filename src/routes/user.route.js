@@ -6,8 +6,10 @@ import {
   bankVerification,
   loginToken,
   loginOTP,
+  logout,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { auth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -20,10 +22,14 @@ router.route("/register").post(upload.none(), registerUser);
 router.route("/login-otp").post(upload.none(), loginOTP);
 router.route("/login-token").post(upload.none(), loginToken);
 
+// Secured Routes
+
+router.route("/logout").post(upload.none(), auth, logout);
+
 // http://localhost:3005/api/v1/users/kyc
-router.route("/kyc").post(upload.single("livePhoto"), kycVerification);
+router.route("/kyc").post(upload.single("livePhoto"), auth, kycVerification);
 
 // http://localhost:3005/api/v1/users/bank
-router.route("/bank").post(upload.none(), bankVerification);
+router.route("/bank").post(upload.none(), auth, bankVerification);
 
 export default router;

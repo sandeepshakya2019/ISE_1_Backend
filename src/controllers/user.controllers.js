@@ -15,6 +15,21 @@ import {
 import { Bank } from "../models/bank.models.js";
 import { sendOtp } from "../utils/sendOTP.utils.js";
 
+const genrateAccessandRefreshToken = async (userid) => {
+  try {
+    const user = await User.findById(userid);
+    const access = user.generateToken();
+    const refresh = user.refreshToken();
+    user.refreshToken = refresh;
+    await user.save({ validateBeforeSave: false });
+    return { access, refresh };
+  } catch (error) {
+    throw new ApiError(500, {
+      userError: "Something Went Wrong while genrating access Tokens",
+    });
+  }
+};
+
 const basicSetup = asyncHandler((req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "Welcome to API "));
 });
@@ -127,12 +142,39 @@ const loginToken = asyncHandler(async (req, res) => {
     // remove the otp and otpExpiresAt
     await User.updateOne({ mobileNo }, { otp: null, otpExpiresAt: null });
     // access and refresh token
-    const token = user.generateToken();
+
+    const { accessToken, refreshToken } = await genrateAccessandRefreshToken(
+      user._id
+    );
     // send cookie
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
     return res
       .status(200)
-      .json(new ApiResponse(200, { user, token }, "[+] Login Successfully"));
+      .cookie("refreshToken", refreshToken, options)
+      .cookie("accessToken", accessToken, options)
+      .json(new ApiResponse(200, { user, tokens }, "[+] Login Successfully"));
   }
+});
+
+const logout = asyncHandler(async (req, res) => {
+  id = req.user._id;
+  await User.findByIdAndUpdate(
+    id,
+    { $set: { refreshToken: null } },
+    { new: true }
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", options)
+    .json(new ApiResponse(200, null, "[+] User Logout Successfully"));
 });
 
 const kycVerification = asyncHandler(async (req, res) => {
@@ -248,4 +290,5 @@ export {
   kycVerification,
   loginOTP,
   loginToken,
+  logout,
 };

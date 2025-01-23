@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid emiail id !!`,
       },
     },
-    refreshToken: {
+    rtoken: {
       type: String,
       required: false,
     },
@@ -114,7 +114,7 @@ userSchema.methods.generateToken = async function () {
   );
 };
 
-userSchema.methods.RefreshToken = async function () {
+userSchema.methods.refreshToken = async function () {
   jwt.sign(
     {
       _id: this._id,
