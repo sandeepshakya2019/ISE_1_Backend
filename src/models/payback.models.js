@@ -11,6 +11,10 @@ const paybackDetailsSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    paymentType: {
+      type: String,
+      required: true,
+    },
     loanId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Loan",
