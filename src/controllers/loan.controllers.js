@@ -7,12 +7,12 @@ import stripe from "stripe";
 const strip = stripe(process.env.STRIPE_SECRET_KEY);
 
 const getAllLoans = asyncHandler(async (req, res) => {
-  const { mobileNo } = req.body;
-  if (!mobileNo || mobileNo.length !== 10) {
-    throw new ApiError(400, { userError: "Invalid Mobile No" });
+  const id = req.user._id;
+  if (!id || id.length !== 10) {
+    throw new ApiError(400, { userError: "Invalid User Request" });
   }
   // databse call to get the loan from loan model
-  const loans = await Loan.find({ mobileNo });
+  const loans = await Loan.find({ userid: id });
   return res
     .status(200)
     .json(new ApiResponse(200, loans, "[+] Loan Fetched Succcessfully"));
@@ -20,10 +20,10 @@ const getAllLoans = asyncHandler(async (req, res) => {
 
 const accessLoan = asyncHandler(async (req, res) => {
   const { totalLoanAmount, loanReason } = req.body;
-  const id = req.user._id;
+  const id = req?.user?._id;
   const user = await User.findById(id);
   if (!user) {
-    throw new ApiError(400, { userError: "Loan Not Found" });
+    throw new ApiError(400, { userError: "User Not Found" });
   }
   if (totalLoanAmount <= user.offeredAmount) {
     user.offeredAmount -= totalLoanAmount;
@@ -33,7 +33,7 @@ const accessLoan = asyncHandler(async (req, res) => {
       totalLoanAmount,
       loanReason,
       loanStatus: "Requested",
-      user: user._id,
+      userid: user._id,
       paybackAmount: totalLoanAmount,
     });
     await loan.save();
@@ -49,7 +49,7 @@ const accessLoan = asyncHandler(async (req, res) => {
 
 const repayLoan = asyncHandler(async (req, res) => {
   const user = req.user;
-  // write the code
+  // write the code payment integration
 });
 
 const QRCodeGenrator = asyncHandler(async (req, res) => {
@@ -73,7 +73,6 @@ const QRCodeGenrator = asyncHandler(async (req, res) => {
       );
     // You can now use this URL to display the QR code on your webpage or app
   });
-  // dummmyAadharData;
 });
 
 export { getAllLoans, accessLoan, repayLoan, QRCodeGenrator };
