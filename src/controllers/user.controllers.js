@@ -129,13 +129,16 @@ const loginToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, errorMsg);
     }
 
-    if (user.otpExpiresAt < Date.now()) {
-      errorMsg.userError = "[-] OTP Expired";
-      throw new ApiError(401, errorMsg);
-    }
+    // if (user.otpExpiresAt < Date.now()) {
+    //   errorMsg.userError = "[-] OTP Expired";
+    //   throw new ApiError(401, errorMsg);
+    // }
 
     // remove the otp and otpExpiresAt
-    await User.updateOne({ mobileNo }, { otp: null, otpExpiresAt: null });
+    // await User.updateOne(
+    //   { mobileNo },
+    //   { otp: null, otpExpiresAt: null, isOtp: true }
+    // );
     // access and refresh token
 
     const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);

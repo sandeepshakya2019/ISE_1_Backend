@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 10000,
     },
+    isOtp: {
+      type: Boolean,
+      default: false,
+    },
     rtoken: {
       type: String,
       required: false,
