@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import { Loan } from "../models/loan.models.js";
 import { User } from "../models/user.models.js";
 import stripe from "stripe";
+import { totalLoans } from "../constants.js";
 const strip = stripe(process.env.STRIPE_SECRET_KEY);
 
 const getAllLoans = asyncHandler(async (req, res) => {
@@ -26,22 +27,27 @@ const accessLoan = asyncHandler(async (req, res) => {
     throw new ApiError(400, { userError: "User Not Found" });
   }
   if (totalLoanAmount <= user.offeredAmount) {
-    user.offeredAmount -= totalLoanAmount;
-    user.sectionedAmount += totalLoanAmount;
-    // save in loan model
-    const loan = new Loan({
-      totalLoanAmount,
-      loanReason,
-      loanStatus: "Requested",
-      userid: user._id,
-      paybackAmount: totalLoanAmount,
-    });
-    await loan.save();
-    await user.save();
+    user.noOfLoan = user.noOfLoan + 1;
+    if (user.noOfLoan <= totalLoans) {
+      user.offeredAmount -= totalLoanAmount;
+      user.sectionedAmount += totalLoanAmount;
+      // save in loan model
+      const loan = new Loan({
+        totalLoanAmount,
+        loanReason,
+        loanStatus: "Requested",
+        userid: user._id,
+        paybackAmount: totalLoanAmount,
+      });
+      await loan.save();
+      await user.save();
 
-    return res
-      .status(200)
-      .json(new ApiResponse(200, null, "[+] Loan Access Granted"));
+      return res
+        .status(200)
+        .json(new ApiResponse(200, loan, "[+] Loan Access Granted"));
+    } else {
+      throw new ApiError(400, { userError: "Loan Limit Exceeded" });
+    }
   } else {
     throw new ApiError(400, { userError: "Insufficient Loan Amount" });
   }

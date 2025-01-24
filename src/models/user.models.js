@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid emiail id !!`,
       },
     },
+    noOfLoan: {
+      type: Number,
+      default: 0,
+    },
     sectionedAmount: {
       type: Number,
       default: 0,
