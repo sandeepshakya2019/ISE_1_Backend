@@ -4,6 +4,6 @@ import { auth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(auth, getAllDetails);
+router.route("/").get(auth, getAllDetails);
 
 export default router;
