@@ -162,7 +162,6 @@ const loginToken = asyncHandler(async (req, res) => {
 });
 
 const loginCheck = asyncHandler(async (req, res) => {
-  console.log("login", req.user);
   let errorMsg = {
     userError: "",
   };
@@ -235,6 +234,9 @@ const kycVerification = asyncHandler(async (req, res) => {
 
     if (existedUser) {
       // Kyc;
+      existedUser.isKYC = true;
+      existedUser.photo = livePhoto.secure_url;
+
       const storedKyc = new Kyc({
         aadharCardId,
         accountNumber,
@@ -244,7 +246,7 @@ const kycVerification = asyncHandler(async (req, res) => {
         userid: existedUser._id,
       });
       const savedKyc = await storedKyc.save();
-      console.log(savedKyc);
+      existedUser.save();
       if (savedKyc) {
         return res
           .status(201)

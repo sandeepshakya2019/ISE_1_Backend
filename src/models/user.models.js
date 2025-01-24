@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    photo: {
+      type: String,
+      trim: true,
+      required: [true, "Photo is required"],
+    },
     otpExpiresAt: {
       type: Date,
       default: null,
