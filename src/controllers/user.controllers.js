@@ -206,6 +206,7 @@ const kycVerification = asyncHandler(async (req, res) => {
     errorMsg.livePhoto = "Upload Faild";
     throw new ApiError(400, errorMsg);
   }
+  const { aadharCardId, accountNumber, ifscCode } = req.body;
 
   if (isError[0]) {
     throw new ApiError(400, isError[1]);
