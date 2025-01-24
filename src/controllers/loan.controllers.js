@@ -9,7 +9,8 @@ const strip = stripe(process.env.STRIPE_SECRET_KEY);
 
 const getAllLoans = asyncHandler(async (req, res) => {
   const id = req.user._id;
-  if (!id || id.length !== 10) {
+  console.log(req.user);
+  if (!id) {
     throw new ApiError(400, { userError: "Invalid User Request" });
   }
   // databse call to get the loan from loan model
@@ -29,8 +30,8 @@ const accessLoan = asyncHandler(async (req, res) => {
   if (totalLoanAmount <= user.offeredAmount) {
     user.noOfLoan = user.noOfLoan + 1;
     if (user.noOfLoan <= totalLoans) {
-      user.offeredAmount -= totalLoanAmount;
-      user.sectionedAmount += totalLoanAmount;
+      user.offeredAmount -= Number(totalLoanAmount);
+      user.sectionedAmount += Number(totalLoanAmount);
       // save in loan model
       const loan = new Loan({
         totalLoanAmount,
