@@ -24,10 +24,7 @@ router.route("/login-token").post(upload.none(), loginToken);
 
 // Secured Routes
 router.route("/refresh-token").post(upload.none(), auth, refreshLoginToken);
-
 router.route("/logout").post(upload.none(), auth, logout);
-
-// http://localhost:3005/api/v1/users/kyc
 router.route("/kyc").post(upload.single("livePhoto"), auth, kycVerification);
 
 export default router;

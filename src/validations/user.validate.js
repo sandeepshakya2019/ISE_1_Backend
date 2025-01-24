@@ -58,7 +58,6 @@ export const KYCValidate = (body) => {
   const { aadharCardId, accountNumber, ifscCode } = body;
 
   let errorMsg = {
-    livePhoto: "",
     aadharCardId: "",
     accountNumber: "",
     ifscCode: "",

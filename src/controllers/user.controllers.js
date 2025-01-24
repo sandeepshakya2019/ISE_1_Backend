@@ -199,7 +199,7 @@ const kycVerification = asyncHandler(async (req, res) => {
 
   const livePhoto = await uploadOnCloudinary(
     livePhotoPath,
-    req?.body?.userMobileNo
+    req?.user?.mobileNo
   );
 
   if (!livePhoto) {
