@@ -220,7 +220,7 @@ const kycVerification = asyncHandler(async (req, res) => {
         aadharCardId,
         accountNumber,
         ifscCode,
-        photo: livePhoto,
+        photo: livePhoto.secure_url,
         userid: existedUser._id,
       });
       const savedKyc = await storedKyc.save();
