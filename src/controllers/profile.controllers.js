@@ -4,14 +4,16 @@ import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import { Loan } from "../models/loan.models.js";
 import { User } from "../models/user.models.js";
 import { Payback } from "../models/payback.models.js";
+import { Kyc } from "../models/kyc.models.js";
 
 const getAllDetails = asyncHandler(async (req, res) => {
   const id = req.user._id;
   const userdetails = await User.findById(id);
-  const loandetails = await Loan.findById(id);
-  const paybackdetails = await Payback.findById(id);
+  const loandetails = await Loan.find({ userid: id });
+  const paybackdetails = await Payback.find({ userid: id });
+  const kycDetaiils = await Kyc.find({ userid: id });
 
-  const result = { userdetails, loandetails, paybackdetails };
+  const result = { userdetails, loandetails, paybackdetails, kycDetaiils };
 
   res
     .status(200)

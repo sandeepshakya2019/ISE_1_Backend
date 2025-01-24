@@ -159,12 +159,8 @@ const loginToken = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
-  id = req.user._id;
-  await User.findByIdAndUpdate(
-    id,
-    { $set: { refreshToken: null } },
-    { new: true }
-  );
+  const id = req.user._id;
+  await User.findByIdAndUpdate(id, { $set: { rtoken: null } }, { new: true });
   const options = {
     httpOnly: true,
     secure: true,
