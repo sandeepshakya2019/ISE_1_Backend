@@ -1,6 +1,6 @@
 export const DB_NAME = "APPDBANME";
 
-export const totalLoans = 5;
+export const totalLoans = 3;
 
 export const dummmyAadharData = [
   {
