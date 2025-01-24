@@ -161,6 +161,26 @@ const loginToken = asyncHandler(async (req, res) => {
   }
 });
 
+const loginCheck = asyncHandler(async (req, res) => {
+  console.log("login", req.user);
+  let errorMsg = {
+    userError: "",
+  };
+  if (!req.user) {
+    errorMsg.userError = "[-] User Not Found";
+    throw new ApiError(401, errorMsg);
+  } else {
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    return res
+      .status(200)
+      .cookie("refreshToken", req.user.refresht, options)
+      .json(new ApiResponse(200, req?.user, "[+] Details Fetch Success"));
+  }
+});
+
 const logout = asyncHandler(async (req, res) => {
   const id = req.user._id;
   await User.findByIdAndUpdate(id, { $set: { rtoken: null } }, { new: true });
@@ -205,7 +225,7 @@ const kycVerification = asyncHandler(async (req, res) => {
     errorMsg.livePhoto = "Upload Faild";
     throw new ApiError(400, errorMsg);
   }
-  const { aadharCardId, accountNumber, ifscCode } = req.body;
+  const { aadharCardId, accountNumber, ifscCode, address } = req.body;
 
   if (isError[0]) {
     throw new ApiError(400, isError[1]);
@@ -219,6 +239,7 @@ const kycVerification = asyncHandler(async (req, res) => {
         aadharCardId,
         accountNumber,
         ifscCode,
+        address,
         photo: livePhoto.secure_url,
         userid: existedUser._id,
       });
@@ -286,4 +307,5 @@ export {
   loginToken,
   logout,
   refreshLoginToken,
+  loginCheck,
 };

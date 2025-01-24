@@ -29,6 +29,11 @@ const kycSchema = new mongoose.Schema(
       trim: true,
       required: [true, "Photo is required"],
     },
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     userid: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

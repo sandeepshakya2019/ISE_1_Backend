@@ -55,12 +55,13 @@ export const registerValidation = (body) => {
 
 export const KYCValidate = (body) => {
   console.log("KYC Vaidate", body);
-  const { aadharCardId, accountNumber, ifscCode } = body;
+  const { aadharCardId, accountNumber, ifscCode, address } = body;
 
   let errorMsg = {
     aadharCardId: "",
     accountNumber: "",
     ifscCode: "",
+    address: "",
   };
   let isError = false;
 
