@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema(
     photo: {
       type: String,
       trim: true,
-      required: [true, "Photo is required"],
+      required: [false, "Photo is required"],
     },
     otpExpiresAt: {
       type: Date,
