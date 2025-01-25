@@ -1,3 +1,4 @@
+import { logout } from "../controllers/user.controllers.js";
 import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
@@ -8,6 +9,7 @@ export const auth = asyncHandler(async (req, res, next) => {
     const refreshTokesn =
       req.cookies?.refreshToken ||
       req.header("Authorization")?.replace("Bearer ", "");
+
     if (!refreshTokesn) {
       throw new ApiError(401, { userError: "No Refresh token" });
     }
@@ -24,7 +26,14 @@ export const auth = asyncHandler(async (req, res, next) => {
       throw new ApiError(404, { userError: "User not found" });
     }
     req.user = user;
-    next();
+    if (!user.rtoken) {
+      // lopgout the
+      res.clearCookie("refreshToken");
+      logout();
+      throw new ApiError(401, { userError: "Refresh token expired" });
+    } else {
+      next();
+    }
   } catch (error) {
     throw new ApiError(401, { userError: "Invalid Refresh token Error" });
   }

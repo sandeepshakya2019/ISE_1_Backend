@@ -24,7 +24,7 @@ const genrateAccessandRefreshToken = async (userid) => {
     await user.save();
     return { accesst, refresht };
   } catch (error) {
-    console.log("error", error);
+    console.log("Error in Genrating Refresh and Access Tokens", error);
     throw new ApiError(500, {
       userError: "Something Went Wrong while genrating access Tokens",
     });
@@ -129,16 +129,16 @@ const loginToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, errorMsg);
     }
 
-    // if (user.otpExpiresAt < Date.now()) {
-    //   errorMsg.userError = "[-] OTP Expired";
-    //   throw new ApiError(401, errorMsg);
-    // }
+    if (user.otpExpiresAt < Date.now()) {
+      errorMsg.userError = "[-] OTP Expired";
+      throw new ApiError(401, errorMsg);
+    }
 
     // remove the otp and otpExpiresAt
-    // await User.updateOne(
-    //   { mobileNo },
-    //   { otp: null, otpExpiresAt: null, isOtp: true }
-    // );
+    await User.updateOne(
+      { mobileNo },
+      { otp: null, otpExpiresAt: null, isOtp: true }
+    );
     // access and refresh token
 
     const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);
@@ -195,10 +195,6 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const kycVerification = asyncHandler(async (req, res) => {
-  console.log("Files", req.file);
-  console.log("Body", req.body);
-  console.log("User", req.user);
-
   let errorMsg = {
     livePhoto: "",
     userError: "",

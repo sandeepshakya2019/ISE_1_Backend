@@ -8,16 +8,19 @@ import { totalLoans } from "../constants.js";
 const strip = stripe(process.env.STRIPE_SECRET_KEY);
 
 const getAllLoans = asyncHandler(async (req, res) => {
-  const id = req.user._id;
-  console.log(req.user);
-  if (!id) {
-    throw new ApiError(400, { userError: "Invalid User Request" });
+  try {
+    const id = req.user._id;
+    if (!id) {
+      throw new ApiError(400, { userError: "Invalid User Request" });
+    }
+    // databse call to get the loan from loan model
+    const loans = await Loan.find({ userid: id });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, loans, "[+] Loan Fetched Succcessfully"));
+  } catch (error) {
+    throw new ApiError(400, { userError: "Something Went Wrong in Get Loans" });
   }
-  // databse call to get the loan from loan model
-  const loans = await Loan.find({ userid: id });
-  return res
-    .status(200)
-    .json(new ApiResponse(200, loans, "[+] Loan Fetched Succcessfully"));
 });
 
 const accessLoan = asyncHandler(async (req, res) => {
@@ -56,7 +59,30 @@ const accessLoan = asyncHandler(async (req, res) => {
 
 const repayLoan = asyncHandler(async (req, res) => {
   const user = req.user;
-  // write the code payment integration
+
+  const { loanId } = req.body;
+  try {
+    const loan = await Loan.findByIdAndUpdate(
+      loanId,
+      { paybackAmount: 0, loanStatus: "Repaid" },
+      { new: true }
+    );
+    if (!loan) {
+      throw new ApiError(404, { userError: "Loan Not Found" });
+    }
+    user.sectionedAmount -= Number(loan.totalLoanAmount);
+    user.offeredAmount += Number(loan.totalLoanAmount);
+    user.noOfLoan = user.noOfLoan - 1;
+    await user.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, loan, "[+] Loan Repaid Successfully"));
+    // send the UPI payment link to the user
+    // return res.json({ paymentLink: paymentUrl });
+  } catch (error) {
+    console.error("Error repaying loan:", error);
+    throw new ApiError(404, { userError: "Something Went Wrong" });
+  }
 });
 
 const QRCodeGenrator = asyncHandler(async (req, res) => {
