@@ -74,6 +74,7 @@ const repayLoan = asyncHandler(async (req, res) => {
     user.offeredAmount += Number(loan.totalLoanAmount);
     user.noOfLoan = user.noOfLoan - 1;
     await user.save();
+    await loanId.save();
     return res
       .status(200)
       .json(new ApiResponse(200, loan, "[+] Loan Repaid Successfully"));
