@@ -24,36 +24,40 @@ const getAllLoans = asyncHandler(async (req, res) => {
 });
 
 const accessLoan = asyncHandler(async (req, res) => {
-  const { totalLoanAmount, loanReason } = req.body;
-  const id = req?.user?._id;
-  const user = await User.findById(id);
-  if (!user) {
-    throw new ApiError(400, { userError: "User Not Found" });
-  }
-  if (totalLoanAmount <= user.offeredAmount) {
-    user.noOfLoan = user.noOfLoan + 1;
-    if (user.noOfLoan <= totalLoans) {
-      user.offeredAmount -= Number(totalLoanAmount);
-      user.sectionedAmount += Number(totalLoanAmount);
-      // save in loan model
-      const loan = new Loan({
-        totalLoanAmount,
-        loanReason,
-        loanStatus: "Requested",
-        userid: user._id,
-        paybackAmount: totalLoanAmount,
-      });
-      await loan.save();
-      await user.save();
-
-      return res
-        .status(200)
-        .json(new ApiResponse(200, loan, "[+] Loan Access Granted"));
-    } else {
-      throw new ApiError(400, { userError: "Loan Limit Exceeded" });
+  try {
+    const { totalLoanAmount, loanReason } = req.body;
+    const id = req?.user?._id;
+    const user = await User.findById(id);
+    if (!user) {
+      throw new ApiError(400, { userError: "User Not Found" });
     }
-  } else {
-    throw new ApiError(400, { userError: "Insufficient Loan Amount" });
+    if (totalLoanAmount <= user.offeredAmount) {
+      user.noOfLoan = user.noOfLoan + 1;
+      if (user.noOfLoan <= totalLoans) {
+        user.offeredAmount -= Number(totalLoanAmount);
+        user.sectionedAmount += Number(totalLoanAmount);
+        // save in loan model
+        const loan = new Loan({
+          totalLoanAmount,
+          loanReason,
+          loanStatus: "Requested",
+          userid: user._id,
+          paybackAmount: totalLoanAmount,
+        });
+        await loan.save();
+        await user.save();
+
+        return res
+          .status(200)
+          .json(new ApiResponse(200, loan, "[+] Loan Access Granted"));
+      } else {
+        throw new ApiError(400, { userError: "Loan Limit Exceeded" });
+      }
+    } else {
+      throw new ApiError(400, { userError: "Insufficient Loan Amount" });
+    }
+  } catch (error) {
+    throw new ApiError(400, { userError: "Something Went Wrong" });
   }
 });
 
