@@ -35,6 +35,7 @@ export const auth = asyncHandler(async (req, res, next) => {
       next();
     }
   } catch (error) {
-    throw new ApiError(401, { userError: "Invalid Refresh token Error" });
+    console.log("Auth", error);
+    throw new ApiError(401, { userError: error });
   }
 });
