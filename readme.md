@@ -363,24 +363,20 @@ TWILLIO_PHONE_NUMBER=
 
 ## 6. Deployment Instructions
 
-* Clone the repository:
-
-```git clone https://github.com/sandeepshakya2019/ISE_1_Backend```
+* Clone the repository: ```git clone https://github.com/sandeepshakya2019/ISE_1_Backend```
 
 * `cd ISE_1_Backend`
-* Install dependencies:
-```npm install```
+* Install dependencies: ```npm install```
 * Set up environment variables in a .env file.
-* Run the server:
-```npm start```
+* Run the server: ```npm start```
 * Access the API at ```http://localhost:3005/api.v1/users```
 
-## 5. Issues After Pushing the Backend to server(on Vercel)
+## 7. Issues After Pushing the Backend to server(on Vercel)
 
 * After hoisitng since at time of KYC we are taking the photo from user using multer we upload on server and then we upload on cloudinary since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend)
 
 
-## 7. Authors
+## 8. Authors
 
 * Sandeep Kumar CS24M112
 * Abhishek Kumar CS24M120
