@@ -390,6 +390,8 @@ TWILLIO_PHONE_NUMBER=
 ## 7. Issues After Pushing the Backend to server(on Vercel)
 
 - After hoisitng since at time of KYC we are taking the photo from user using multer we upload on server and then we upload on cloudinary since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend)
+  
+https://github.com/user-attachments/assets/b43f62d7-7e8e-4f22-bbbf-51fc96d7740e
 
 ## 8. Authors
 
