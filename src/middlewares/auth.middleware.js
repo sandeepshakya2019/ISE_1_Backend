@@ -27,15 +27,15 @@ export const auth = asyncHandler(async (req, res, next) => {
     }
     req.user = user;
     if (!user.rtoken) {
-      // lopgout the
-      res.clearCookie("refreshToken");
-      logout();
       throw new ApiError(401, { userError: "Refresh token expired" });
     } else {
       next();
     }
   } catch (error) {
     console.log("Auth", error);
-    throw new ApiError(401, { userError: error });
+    throw new ApiError(401, {
+      userError: "Authentication Error",
+      systemError: error,
+    });
   }
 });
