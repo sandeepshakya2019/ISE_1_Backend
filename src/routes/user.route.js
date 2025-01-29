@@ -29,5 +29,5 @@ router.route("/login-check").get(upload.none(), auth, loginCheck);
 router.route("/refresh-token").post(upload.none(), auth, refreshLoginToken);
 router.route("/logout").post(upload.none(), auth, logout);
 router.route("/kyc").post(upload.single("livePhoto"), auth, kycVerification);
-
+//
 export default router;
