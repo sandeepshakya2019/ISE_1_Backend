@@ -136,8 +136,9 @@ const loginToken = asyncHandler(async (req, res) => {
 
     // remove the otp and otpExpiresAt
     await User.updateOne(
-      { mobileNo }
+      { mobileNo },
       // { otp: null, otpExpiresAt: null, isOtp: true }
+      { isOtp: true }
     );
 
     const { accesst } = await genrateAccessandRefreshToken(user._id);
