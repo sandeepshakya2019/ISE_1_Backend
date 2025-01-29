@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    rtoken: {
+    atoken: {
       type: String,
       required: false,
     },

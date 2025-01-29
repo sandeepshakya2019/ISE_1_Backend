@@ -130,10 +130,10 @@ const loginToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, errorMsg);
       }
 
-      // if (user.otpExpiresAt < Date.now()) {
-      //   errorMsg.userError = "[-] OTP Expired";
-      //   throw new ApiError(401, errorMsg);
-      // }
+      if (user.otpExpiresAt < Date.now()) {
+        errorMsg.userError = "[-] OTP Expired";
+        throw new ApiError(401, errorMsg);
+      }
 
       // remove the otp and otpExpiresAt
       await User.updateOne(
@@ -155,8 +155,7 @@ const loginToken = asyncHandler(async (req, res) => {
         );
     }
   } catch (error) {
-    errorMsg.userError = "[-] OTP Login Error";
-    throw new ApiError(400, errorMsg);
+    throw new ApiError(400, { userError: "[-] OTP Login Error" });
   }
 });
 
