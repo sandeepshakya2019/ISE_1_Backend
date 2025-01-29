@@ -155,7 +155,7 @@ const loginToken = asyncHandler(async (req, res) => {
         );
     }
   } catch (error) {
-    throw new ApiError(400, { userError: "[-] OTP Login Error" });
+    throw new ApiError(400, error?.message || "Something Went wrong");
   }
 });
 

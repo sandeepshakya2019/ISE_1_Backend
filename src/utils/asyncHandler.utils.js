@@ -3,7 +3,7 @@ export function asyncHandler(requestHandler) {
     try {
       return await requestHandler(req, res, next);
     } catch (error) {
-      console.log("async", error.message);
+      console.log("async", error);
       res.status(error.code || 500).json({
         success: false,
         message: error.message,
