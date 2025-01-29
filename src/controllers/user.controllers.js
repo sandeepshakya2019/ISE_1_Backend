@@ -84,8 +84,8 @@ const loginOTP = asyncHandler(async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    // const result = await sendOtp(mobileNo, otp);
-    const result = { success: true };
+    const result = await sendOtp(mobileNo, otp);
+    // const result = { success: true };
 
     if (result.success) {
       const result = await User.updateOne(
