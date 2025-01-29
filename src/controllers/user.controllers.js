@@ -111,46 +111,52 @@ const loginOTP = asyncHandler(async (req, res) => {
 });
 
 const loginToken = asyncHandler(async (req, res) => {
-  let isError = ValidateUserAndOTP(req.body);
-  let errorMsg = { userError: "" };
-  if (isError[0]) {
-    throw new ApiError(400, isError[1]);
-  } else {
-    const { mobileNo, otp } = req.body;
+  try {
+    let isError = ValidateUserAndOTP(req.body);
+    let errorMsg = { userError: "" };
+    if (isError[0]) {
+      throw new ApiError(400, isError[1]);
+    } else {
+      const { mobileNo, otp } = req.body;
 
-    const user = await User.findOne({ mobileNo });
-    if (!user) {
-      errorMsg.userError = "[-] User Not Found";
-      throw new ApiError(401, errorMsg);
+      const user = await User.findOne({ mobileNo });
+      if (!user) {
+        errorMsg.userError = "[-] User Not Found";
+        throw new ApiError(401, errorMsg);
+      }
+
+      if (user.otp !== Number(otp)) {
+        errorMsg.userError = "[-] Invalid OTP";
+        throw new ApiError(401, errorMsg);
+      }
+
+      // if (user.otpExpiresAt < Date.now()) {
+      //   errorMsg.userError = "[-] OTP Expired";
+      //   throw new ApiError(401, errorMsg);
+      // }
+
+      // remove the otp and otpExpiresAt
+      await User.updateOne(
+        { mobileNo },
+        { otp: null, otpExpiresAt: null, isOtp: true }
+      );
+
+      const { accesst } = await genrateAccessandRefreshToken(user._id);
+
+      const options = {
+        httpOnly: true,
+        secure: true,
+      };
+      return res
+        .status(200)
+        .cookie("accessToken", accesst, options)
+        .json(
+          new ApiResponse(200, { user, accesst }, "[+] Login Successfully")
+        );
     }
-
-    if (user.otp !== Number(otp)) {
-      errorMsg.userError = "[-] Invalid OTP";
-      throw new ApiError(401, errorMsg);
-    }
-
-    // if (user.otpExpiresAt < Date.now()) {
-    //   errorMsg.userError = "[-] OTP Expired";
-    //   throw new ApiError(401, errorMsg);
-    // }
-
-    // remove the otp and otpExpiresAt
-    await User.updateOne(
-      { mobileNo },
-      // { otp: null, otpExpiresAt: null, isOtp: true }
-      { isOtp: true }
-    );
-
-    const { accesst } = await genrateAccessandRefreshToken(user._id);
-
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-    return res
-      .status(200)
-      .cookie("accessToken", accesst, options)
-      .json(new ApiResponse(200, { user, accesst }, "[+] Login Successfully"));
+  } catch (error) {
+    errorMsg.userError = "[-] OTP Login Error";
+    throw new ApiError(400, errorMsg);
   }
 });
 
