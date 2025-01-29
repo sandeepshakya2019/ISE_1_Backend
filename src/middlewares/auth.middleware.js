@@ -6,20 +6,21 @@ import jwt from "jsonwebtoken";
 
 export const auth = asyncHandler(async (req, res, next) => {
   try {
-    const refreshToken =
-      req.cookies?.refreshToken ||
+    console.log("header", req.header);
+    const accessToken =
+      req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
 
-    console.log(refreshToken); // For debugging purposes, remember to remove in production.
+    console.log("refersh", accessToken); // For debugging purposes, remember to remove in production.
 
-    if (!refreshToken) {
+    if (!accessToken) {
       throw new ApiError(401, { userError: "No Refresh token" });
     }
 
     // Verify the refresh token
     try {
       const decodeToken = jwt.verify(
-        refreshToken,
+        accessToken,
         process.env.ACCESS_TOKEN_SECRET
       );
 
@@ -31,19 +32,19 @@ export const auth = asyncHandler(async (req, res, next) => {
 
       // Check if the refresh token exists on the user document
       if (!user.rtoken) {
-        throw new ApiError(401, { userError: "Refresh token expired" });
+        throw new ApiError(401, { userError: "Token expired" });
       }
 
       req.user = user; // Attach user to request object
       next(); // Continue to the next middleware or route handler
     } catch (jwtError) {
       throw new ApiError(403, {
-        userError: "Invalid or Expired Refresh token",
+        userError: "Invalid or Expired Token",
         systemError: jwtError,
       });
     }
   } catch (error) {
-    console.log("Auth Error:", error); // Keep this for debugging purposes.
+    console.log("Auth Error:", error.response); // Keep this for debugging purposes.
     throw new ApiError(401, {
       userError: "Authentication Error",
       systemError: error,

@@ -19,10 +19,9 @@ const genrateAccessandRefreshToken = async (userid) => {
   try {
     const user = await User.findById(userid);
     const accesst = user.generateToken();
-    const refresht = user.refreshToken();
-    user.rtoken = refresht;
+    user.atoken = accesst;
     await user.save();
-    return { accesst, refresht };
+    return { accesst };
   } catch (error) {
     console.log("Error in Genrating Refresh and Access Tokens", error);
     throw new ApiError(500, {
@@ -85,7 +84,8 @@ const loginOTP = asyncHandler(async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const result = await sendOtp(mobileNo, otp);
+    // const result = await sendOtp(mobileNo, otp);
+    const result = true;
 
     if (result.success) {
       const result = await User.updateOne(
@@ -129,19 +129,18 @@ const loginToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, errorMsg);
     }
 
-    if (user.otpExpiresAt < Date.now()) {
-      errorMsg.userError = "[-] OTP Expired";
-      throw new ApiError(401, errorMsg);
-    }
+    // if (user.otpExpiresAt < Date.now()) {
+    //   errorMsg.userError = "[-] OTP Expired";
+    //   throw new ApiError(401, errorMsg);
+    // }
 
     // remove the otp and otpExpiresAt
     await User.updateOne(
-      { mobileNo },
-      { otp: null, otpExpiresAt: null, isOtp: true }
+      { mobileNo }
+      // { otp: null, otpExpiresAt: null, isOtp: true }
     );
-    // access and refresh token
 
-    const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);
+    const { accesst } = await genrateAccessandRefreshToken(user._id);
 
     const options = {
       httpOnly: true,
@@ -149,15 +148,8 @@ const loginToken = asyncHandler(async (req, res) => {
     };
     return res
       .status(200)
-      .cookie("refreshToken", refresht, options)
       .cookie("accessToken", accesst, options)
-      .json(
-        new ApiResponse(
-          200,
-          { user, refresht, accesst },
-          "[+] Login Successfully"
-        )
-      );
+      .json(new ApiResponse(200, { user, accesst }, "[+] Login Successfully"));
   }
 });
 
@@ -175,7 +167,7 @@ const loginCheck = asyncHandler(async (req, res) => {
     };
     return res
       .status(200)
-      .cookie("refreshToken", req.user.refresht, options)
+      .cookie("accessToken", req.user.refresht, options)
       .json(new ApiResponse(200, req?.user, "[+] Details Fetch Success"));
   }
 });
@@ -189,7 +181,6 @@ const logout = asyncHandler(async (req, res) => {
   };
   return res
     .status(200)
-    .clearCookie("refreshToken", options)
     .clearCookie("accessToken", options)
     .json(new ApiResponse(200, null, "[+] User Logout Successfully"));
 });
@@ -258,45 +249,6 @@ const kycVerification = asyncHandler(async (req, res) => {
   }
 });
 
-const refreshLoginToken = asyncHandler(async (req, res) => {
-  const incomeingtoken = req.cookies?.refreshToken || req.body.refreshToken;
-  let errorMsg = {
-    tokenError: "",
-  };
-  if (!incomeingtoken) {
-    errorMsg.tokenError = "[-] Token is required";
-    throw new ApiError(400, errorMsg);
-  }
-  const decoToken = jwt.verify(incomeingtoken, process.env.ACCESS_TOKEN_SECRET);
-  if (!decoToken) {
-    errorMsg.tokenError = "[-] Invalid Token";
-    throw new ApiError(401, errorMsg);
-  }
-  const user = await User.findById(decoToken?._id);
-  if (!user) {
-    errorMsg.tokenError = "[-] User Not Found";
-    throw new ApiError(401, errorMsg);
-  }
-  if (incomeingtoken !== user?.rtoken) {
-    errorMsg.tokenError = "[-] Token Mismatch or Expired";
-    throw new ApiError(401, errorMsg);
-  }
-
-  const { accesst, refresht } = await genrateAccessandRefreshToken(user._id);
-
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-  return res
-    .status(200)
-    .cookie("refreshToken", refresht, options)
-    .cookie("accessToken", accesst, options)
-    .json(
-      new ApiResponse(200, { refresht, accesst }, "[+] Access Token Refreshed")
-    );
-});
-
 export {
   basicSetup,
   registerUser,
@@ -304,6 +256,5 @@ export {
   loginOTP,
   loginToken,
   logout,
-  refreshLoginToken,
   loginCheck,
 };

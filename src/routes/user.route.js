@@ -6,7 +6,6 @@ import {
   loginToken,
   loginOTP,
   logout,
-  refreshLoginToken,
   loginCheck,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -26,7 +25,6 @@ router.route("/login-token").post(upload.none(), loginToken);
 router.route("/login-check").get(upload.none(), auth, loginCheck);
 
 // Secured Routes
-router.route("/refresh-token").post(upload.none(), auth, refreshLoginToken);
 router.route("/logout").post(upload.none(), auth, logout);
 router.route("/kyc").post(upload.single("livePhoto"), auth, kycVerification);
 //
