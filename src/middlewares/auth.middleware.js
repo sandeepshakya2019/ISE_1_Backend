@@ -44,7 +44,7 @@ export const auth = asyncHandler(async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("Auth Error:", error.response); // Keep this for debugging purposes.
+    console.log("Auth Error:", error); // Keep this for debugging purposes.
     throw new ApiError(401, {
       userError: "Authentication Error",
       systemError: error,
