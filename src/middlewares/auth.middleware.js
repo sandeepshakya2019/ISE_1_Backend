@@ -9,7 +9,7 @@ export const auth = asyncHandler(async (req, res, next) => {
     const refreshTokesn =
       req.cookies?.refreshToken ||
       req.header("Authorization")?.replace("Bearer ", "");
-
+    console.log(refreshTokesn);
     if (!refreshTokesn) {
       throw new ApiError(401, { userError: "No Refresh token" });
     }
@@ -36,7 +36,6 @@ export const auth = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, {
       userError: "Authentication Error",
       systemError: error,
-      debug: refreshTokesn.split(".").length,
     });
   }
 });
