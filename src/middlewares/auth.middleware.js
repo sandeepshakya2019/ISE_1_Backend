@@ -36,6 +36,7 @@ export const auth = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, {
       userError: "Authentication Error",
       systemError: error,
+      debug: refreshTokesn.split(".").length,
     });
   }
 });
