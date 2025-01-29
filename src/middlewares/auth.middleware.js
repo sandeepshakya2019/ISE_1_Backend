@@ -23,15 +23,17 @@ export const auth = asyncHandler(async (req, res, next) => {
         accessToken,
         process.env.ACCESS_TOKEN_SECRET
       );
+      console.log("decode", decodeToken); // For debugging purposes, remember to remove in production.
 
       // Retrieve the user based on the decoded token's ID
       const user = await User.findById(decodeToken._id);
       if (!user) {
         throw new ApiError(404, { userError: "User not found" });
       }
+      console.log("user", user); // For debugging purposes, remember to remove in production.
 
       // Check if the refresh token exists on the user document
-      if (!user.rtoken) {
+      if (!user.atoken) {
         throw new ApiError(401, { userError: "Token expired" });
       }
 
