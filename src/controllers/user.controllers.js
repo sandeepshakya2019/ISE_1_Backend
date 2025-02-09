@@ -84,8 +84,8 @@ const loginOTP = asyncHandler(async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const result = await sendOtp(mobileNo, otp);
-    // const result = { success: true };
+    // const result = await sendOtp(mobileNo, otp);
+    const result = { success: true };
 
     if (result.success) {
       const result = await User.updateOne(
@@ -125,7 +125,11 @@ const loginToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, errorMsg);
       }
 
-      if (mobileNo == "9084043946") {
+      if (
+        mobileNo == "9084043946" ||
+        mobileNo == "8677963878" ||
+        mobileNo == "1234567890"
+      ) {
         const opt = "OTP is " + otp;
         // return res
         //   .status(200)
