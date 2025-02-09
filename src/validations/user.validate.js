@@ -65,14 +65,14 @@ export const KYCValidate = (body) => {
   };
   let isError = false;
 
-  if (accountNumber?.length < 12 || accountNumber?.length > 18) {
-    errorMsg.accountNumber = "Invalid Account Number";
-    isError = true;
-  }
-  if (ifscCode?.length !== 11) {
-    errorMsg.ifscCode = "Invalid IFSC Code";
-    isError = true;
-  }
+  // if (accountNumber?.length < 12 || accountNumber?.length > 18) {
+  //   errorMsg.accountNumber = "Invalid Account Number";
+  //   isError = true;
+  // }
+  // if (ifscCode?.length !== 11) {
+  //   errorMsg.ifscCode = "Invalid IFSC Code";
+  //   isError = true;
+  // }
   if (!aadharCardId) {
     errorMsg.mobileNo = "Aadhar Card No is required";
     isError = true;
