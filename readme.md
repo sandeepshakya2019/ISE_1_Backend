@@ -72,7 +72,7 @@ Detailed explanation is in our frontend [FinSphere Android App](https://github.c
 
 ### Hosted URL
 
-`https://ise-1-backend.vercel.app/api/v1`
+`[https://ise-1-backend.vercel.app/api/v1](https://ise1backend-production.up.railway.app/api/v1)`
 
 but this created the issue when we upload the file (means we are doing the realtime changes on server file system) which is not possible on free tier hosting.
 
